@@ -6,7 +6,7 @@
 
 Zaawansowany skrypt (Userscript) do gry przeglądarkowej Tanoth. Całkowicie automatyzuje żmudne, codzienne zadania, pozwalając Ci skupić się na czerpaniu przyjemności z gry. Wyposażony w profesjonalny, pływający interfejs użytkownika (GUI).
 
-![Zrzut ekranu interfejsu](TUTAJ_WKLEJ_LINK_DO_SWOJEGO_SCREENA_GUI)
+
 
 ## ✨ Główne funkcje
 
