@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Tanoth Bot Osobisty (Wersja 8.3 - Synchronizacja Pracy)
+// @name         Tanoth Bot Osobisty (Wersja 9.0 - Równoległe Zadania)
 // @namespace    http://tampermonkey.net/
-// @version      8.3
+// @version      9.0
 // @description  Automatyczny bot: Atrybuty, Przygody, Krąg, Mapa, Lochy, Praca i Handel!
 // @author       Neymaro007
 // @match        https://*.tanoth.gameforge.com/main/client*
@@ -44,9 +44,9 @@
         gui.style.flexDirection = 'column';
 
         let html = '';
-
+        
         html += '<div id="tb-header" style="cursor: move; background: linear-gradient(to bottom, #3a2a18, #1a120a); border-bottom: 1px solid #8b6508; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 3px 3px 0 0;">';
-        html += '<span style="font-weight: bold; color: #e6c875; font-size: 13px;">🐉 Tanoth Bot v8.3</span>';
+        html += '<span style="font-weight: bold; color: #e6c875; font-size: 13px;">🐉 Tanoth Bot v9.0</span>';
         html += '<span id="tb-min-btn" style="cursor: pointer; color: #ffaa00; font-weight: bold; font-size: 14px;" title="Minimalizuj">_</span>';
         html += '</div>';
 
@@ -63,7 +63,7 @@
         html += '<div style="margin-bottom: 8px; border-bottom: 1px dotted #5a4010; padding-bottom: 4px;"><b style="color:#e6c875;">PRZYGODY</b></div>';
         html += '<div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><label>Priorytet:</label><select id="cfg_priority" style="background:#2a1e12; color:#e6c875; border:1px solid #8b6508;"><option value="experience">Doświadczenie</option><option value="gold">Złoto</option></select></div>';
         html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><label>Trudność:</label><select id="cfg_difficulty" style="background:#2a1e12; color:#e6c875; border:1px solid #8b6508;"><option value="easy">Łatwe</option><option value="medium">Średnie</option><option value="difficult">Trudne</option><option value="very_difficult" selected>B. Trudne</option></select></div>';
-
+        
         html += '<div style="margin-bottom: 8px; border-bottom: 1px dotted #5a4010; padding-bottom: 4px; display:flex; justify-content:space-between;"><b style="color:#e6c875;">MAPA I LOCHY</b> <span><input type="checkbox" id="cfg_doMap" checked title="Włącz automat mapy"><label style="color:#44ff44; cursor:pointer;" for="cfg_doMap"> Włącz</label></span></div>';
         html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 5px;">';
         html += '<label><input type="checkbox" id="cfg_map_exp" checked> Bór (Exp)</label>';
@@ -80,7 +80,7 @@
         html += '<div style="margin-bottom: 8px; border-bottom: 1px dotted #5a4010; padding-bottom: 4px;"><b style="color:#e6c875;">ZŁOTO</b></div>';
         html += '<div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><label>Wydawaj na:</label><select id="cfg_spendOn" style="background:#2a1e12; color:#e6c875; border:1px solid #8b6508;"><option value="attributes">Atrybuty</option><option value="circle">Krąg (+Atr)</option></select></div>';
         html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><label>Zostaw Min. Złota:</label><input type="number" id="cfg_minGold" value="0" min="0" style="width: 60px; background:#2a1e12; color:#e6c875; border:1px solid #8b6508; text-align:center;"></div>';
-
+        
         html += '<div style="margin-bottom: 8px; border-bottom: 1px dotted #5a4010; padding-bottom: 4px;"><b style="color:#e6c875;">ROZWÓJ ATRYBUTÓW</b></div>';
         html += '<div style="display: flex; flex-direction:column; gap: 4px;">';
         html += '<label><input type="checkbox" id="cfg_attr_STR" checked> Kupuj Siłę</label>';
@@ -127,21 +127,21 @@
         html += '<button id="toggleBotBtn" style="background: #3a2a18; border: 1px solid #e6c875; color: #e6c875; padding: 6px 15px; cursor: pointer; border-radius: 4px; font-weight: bold; transition: 0.2s;">▶ URUCHOM</button>';
         html += '</div>';
 
-        html += '</div>';
+        html += '</div>'; 
         gui.innerHTML = html;
         document.body.appendChild(gui);
 
-        // Zakładki
         const tabs = document.querySelectorAll('.tb-tab');
         const contents = document.querySelectorAll('.tb-content');
         tabs.forEach(function(tab) {
             tab.addEventListener('click', function() {
-                tabs.forEach(function(t) {
-                    t.style.background = 'transparent';
-                    t.style.color = '#8a7a5c';
-                    t.style.fontWeight = 'normal';
+                tabs.forEach(function(t) { 
+                    t.style.background = 'transparent'; 
+                    t.style.color = '#8a7a5c'; 
+                    t.style.fontWeight = 'normal'; 
                 });
                 contents.forEach(function(c) { c.style.display = 'none'; });
+                
                 this.style.background = '#3a2a18';
                 this.style.color = '#e6c875';
                 this.style.fontWeight = 'bold';
@@ -150,7 +150,6 @@
             });
         });
 
-        // Minimalizacja
         const minBtn = document.getElementById('tb-min-btn');
         const bodyEl = document.getElementById('tb-body');
         minBtn.addEventListener('click', function() {
@@ -165,7 +164,6 @@
             }
         });
 
-        // Przeciąganie
         const header = document.getElementById('tb-header');
         let isDragging = false;
         let offsetX, offsetY;
@@ -188,7 +186,7 @@
             if (newY + gui.offsetHeight > window.innerHeight) newY = window.innerHeight - gui.offsetHeight;
             gui.style.left = newX + 'px';
             gui.style.top = newY + 'px';
-            gui.style.right = 'auto';
+            gui.style.right = 'auto'; 
             gui.style.bottom = 'auto';
         });
 
@@ -196,7 +194,6 @@
             isDragging = false;
         });
 
-        // Start
         const btn = document.getElementById('toggleBotBtn');
         btn.onmouseover = function() { this.style.background = '#503a21'; };
         btn.onmouseout = function() { this.style.background = '#3a2a18'; };
@@ -234,12 +231,12 @@
         if (document.getElementById('cfg_map_exp').checked) allowedMapLocs.push(6, 7, 8);
         if (document.getElementById('cfg_map_attr').checked) allowedMapLocs.push(9, 10, 11);
         if (document.getElementById('cfg_map_gold').checked) allowedMapLocs.push(12, 13, 14);
-        if (document.getElementById('cfg_map_adv').checked) allowedMapLocs.push(15, 16, 17);
-
+        if (document.getElementById('cfg_map_adv').checked) allowedMapLocs.push(15, 16, 17); 
+        
         let doCave = document.getElementById('cfg_map_cave').checked;
 
         return {
-            server_speed: 2,
+            server_speed: 2, 
             url: window.flashvars.serverpath,
             priorityAdventure: document.getElementById('cfg_priority').value,
             difficulty: document.getElementById('cfg_difficulty').value,
@@ -264,15 +261,15 @@
         if (consoleEl) {
             const time = new Date().toLocaleTimeString('pl-PL', { hour12: false });
             const logLine = document.createElement('div');
-
+            
             if (text.indexOf("Atakuję") !== -1 || text.indexOf("Rozpoczynam wyprawę") !== -1 || text.indexOf("Wysyłam") !== -1 || text.indexOf("Rozpoczynam Pracę") !== -1) {
-                logLine.style.color = "#44ff44";
+                logLine.style.color = "#44ff44"; 
             } else if (text.indexOf("Kupuję") !== -1 || text.indexOf("Wykupuję") !== -1 || text.indexOf("Sprzedaję") !== -1) {
-                logLine.style.color = "#ffaa00";
-            } else if (text.indexOf("Brak") !== -1 || text.indexOf("Oczekuję") !== -1 || text.indexOf("Czekam") !== -1 || text.indexOf("Tryb") !== -1) {
-                logLine.style.color = "#8a7a5c";
-            } else if (text.indexOf("Aktywne zadanie") !== -1) {
-                logLine.style.color = "#b5a0f5";
+                logLine.style.color = "#ffaa00"; 
+            } else if (text.indexOf("Brak") !== -1 || text.indexOf("Oczekuję") !== -1 || text.indexOf("Czekam") !== -1 || text.indexOf("Tryb") !== -1 || text.indexOf("Wstrzymuję") !== -1) {
+                logLine.style.color = "#8a7a5c"; 
+            } else if (text.indexOf("Aktywne zadanie") !== -1 || text.indexOf("Trwa walka") !== -1) {
+                logLine.style.color = "#b5a0f5"; 
             }
 
             logLine.innerText = "[" + time + "] " + text;
@@ -288,8 +285,9 @@
     function uruchomBota() {
         mainBotLoopActive = true;
         const difficultyMap = { easy: -1, medium: 0, difficult: 1, very_difficult: 2 };
-        let currentResources = { gold: 0, bloodstones: 0 };
-
+        
+        let adventureCooldown = 0; 
+        
         function sleep(seconds) {
             return new Promise(function(resolve) { setTimeout(resolve, seconds * 1000); });
         }
@@ -340,18 +338,17 @@
             return parseResourcesXMLResponse(xmlResourcesData);
         }
 
-        // Centralny punkt wykrywania trwających zadań (Praca / Przygoda) - Niezawodne!
         async function getActiveTask(config) {
             const xmlReq = '<methodCall><methodName>MiniUpdate</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
             const xmlData = await fetchXmlData(config.url, xmlReq);
             const xmlDoc = new DOMParser().parseFromString(xmlData, "text/xml");
-
+            
             let activeModule = null;
             const activeModuleNode = Array.from(xmlDoc.getElementsByTagName('name')).find(n => n.textContent === 'active_module');
-
+            
             if (activeModuleNode && activeModuleNode.parentNode) {
                 const structNode = activeModuleNode.parentNode.getElementsByTagName('struct')[0];
-                if (structNode && structNode.getElementsByTagName('member').length > 0) {
+                if (structNode && structNode.getElementsByTagName('member').length > 0) { 
                     let time = parseInt(findValueByName(structNode, 'time')) || 0;
                     let type = findValueByName(structNode, 'type') || '';
                     if (time > 0 && type !== '') {
@@ -362,10 +359,41 @@
             return activeModule;
         }
 
+        function parseActivityTime(xmlDoc) {
+            const nameNodes = xmlDoc.getElementsByTagName('name');
+            for (let i = 0; i < nameNodes.length; i++) {
+                if (nameNodes[i].textContent === 'current_activity') {
+                    const parent = nameNodes[i].parentNode;
+                    if (parent && parent.nodeName === 'member') {
+                        const struct = parent.getElementsByTagName('struct')[0];
+                        if (struct) {
+                            let t = parseInt(findValueByName(struct, 'time'));
+                            if (!isNaN(t) && t > 0) return t;
+                            
+                            let dur = parseInt(findValueByName(struct, 'duration'));
+                            if (!isNaN(dur) && dur > 0) return dur;
+
+                            let endtime = parseInt(findValueByName(struct, 'endtime')) || parseInt(findValueByName(struct, 'end_time'));
+                            if (!isNaN(endtime) && endtime > 10000000) {
+                                let left = endtime - getCurrentServerTime();
+                                return left > 0 ? left : 0;
+                            }
+                            
+                            let timeRemain = parseInt(findValueByName(struct, 'time_remain'));
+                            if (!isNaN(timeRemain) && timeRemain > 0) return timeRemain;
+
+                            return 10;
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+
         async function processCircle(config) {
             if (config.spendGoldOn !== 'circle') return;
-            let oldCurrentResourcesGold = -1;
-
+            let oldCurrentResourcesGold = -1; 
+            
             while (isBotRunning) {
                 try {
                     const xmlGetCircle = '<methodCall><methodName>EvocationCircle_getCircle</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
@@ -373,7 +401,7 @@
                     const xmlDoc = new DOMParser().parseFromString(xmlCircleData, "text/xml");
                     const members = xmlDoc.getElementsByTagName("member");
                     const circleItems = {};
-
+                    
                     for (let i = 0; i < members.length; i++) {
                       const name = members[i].getElementsByTagName("name")[0] ? members[i].getElementsByTagName("name")[0].textContent : null;
                       const valueString = members[i].getElementsByTagName("string")[0] ? members[i].getElementsByTagName("string")[0].textContent : null;
@@ -399,24 +427,24 @@
                     else if ((circleItems[14][0] < ((circleItems[16][0] + 1) * 10)) && (((circleItems[14][0] + 1) * 10) <= (circleItems[7][0])) && (((circleItems[14][0] + 1) * 10) <= (circleItems[8][0]))) bestItem = 14;
                     else if (circleItems[7][0] < ((circleItems[16][0] + 1) * 100)) bestItem = 7;
                     else bestItem = 16;
-
+                    
                     if (bestItem === null) {
                         updateGuiAction("Krąg ukończony! Zmieniam priorytet na Atrybuty.");
                         document.getElementById('cfg_spendOn').value = "attributes";
                         await sleep(2);
                         break;
                     }
-
-                    currentResources = await getCurrentResources(config);
+                    
+                    let currentResources = await getCurrentResources(config);
                     if (isNaN(currentResources.gold) || currentResources.gold === oldCurrentResourcesGold) break;
                     oldCurrentResourcesGold = currentResources.gold;
 
                     let itemCost = 0;
-                    if (bestItem === 16) { itemCost = (circleItems[bestItem][11] * 2500) + 5000; }
-                    else if (bestItem >= 1 && bestItem <= 10) { itemCost = (circleItems[bestItem][11] * 5) + 10; }
-                    else if (bestItem >= 11 && bestItem <= 15) { itemCost = (circleItems[bestItem][11] * 50) + 100; }
+                    if (bestItem === 16) { itemCost = (circleItems[bestItem][11] * 2500) + 5000; } 
+                    else if (bestItem >= 1 && bestItem <= 10) { itemCost = (circleItems[bestItem][11] * 5) + 10; } 
+                    else if (bestItem >= 11 && bestItem <= 15) { itemCost = (circleItems[bestItem][11] * 50) + 100; } 
                     else break;
-
+                    
                     if ((currentResources.gold - itemCost) >= config.minGoldToSpend) {
                         updateGuiAction("Kupuję Krąg: element ID " + bestItem);
                         const xmlBuyCircle = '<methodCall><methodName>EvocationCircle_buyNode</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><string>gold</string></value></param><param><value><int>' + bestItem + '</int></value></param><param><value><int>1</int></value></param></params></methodCall>';
@@ -425,8 +453,8 @@
                     } else {
                         break;
                     }
-                } catch (error) {
-                    break;
+                } catch (error) { 
+                    break; 
                 }
             }
         }
@@ -440,7 +468,7 @@
                     const xmlGetAttributes = '<methodCall><methodName>GetUserAttributes</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
                     const xmlData = await fetchXmlData(config.url, xmlGetAttributes);
                     const xmlDoc = new DOMParser().parseFromString(xmlData, "text/xml");
-
+                    
                     let baseVal = parseFloat(findValueByName(xmlDoc, 'attributeCostBase')) || 10;
                     let incVal = parseFloat(findValueByName(xmlDoc, 'attributeCostIncrement')) || 5;
                     let factorVal = parseFloat(findValueByName(xmlDoc, 'attributeCostFactor')) || 0.5;
@@ -458,10 +486,10 @@
                         CON: Math.floor((conBought * incVal + baseVal) * factorVal),
                         INT: Math.floor((intBought * incVal + baseVal) * factorVal)
                     };
-
+                    
                     let selectedAttribute = null;
                     let minValue = Infinity;
-
+                    
                     for (const attr of config.priorityAttributes) {
                         if (costValues[attr] && costValues[attr] < minValue) {
                             minValue = costValues[attr];
@@ -471,32 +499,32 @@
 
                     if (!selectedAttribute) break;
 
-                    currentResources = await getCurrentResources(config);
+                    let currentResources = await getCurrentResources(config);
                     if (isNaN(currentResources.gold)) break;
 
                     if ((currentResources.gold - costValues[selectedAttribute]) < config.minGoldToSpend) {
-                        break;
+                        break; 
                     }
 
                     updateGuiAction("Kupuję Atrybut: " + selectedAttribute);
                     const xmlUpgradeAttribute = '<methodCall><methodName>RaiseAttribute</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><string>' + selectedAttribute + '</string></value></param><param><value><int>1</int></value></param></params></methodCall>';
                     await fetchXmlData(config.url, xmlUpgradeAttribute);
-                    await sleep(0.2);
-
-                } catch (error) {
-                    break;
+                    await sleep(0.2); 
+                    
+                } catch (error) { 
+                    break; 
                 }
             }
         }
 
         async function processInventory(config) {
             if (!config.sellNormal && !config.sellEpic) return;
-
+            
             try {
                 const xmlGetEquip = '<methodCall><methodName>GetEquipment</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
                 const equipDataXML = await fetchXmlData(config.url, xmlGetEquip);
                 const equipDoc = new DOMParser().parseFromString(equipDataXML, "text/xml");
-
+                
                 let itemsList = [];
                 const itemsMember = Array.from(equipDoc.getElementsByTagName('name')).find(n => n.textContent === 'items');
                 if (itemsMember && itemsMember.parentNode) {
@@ -522,11 +550,8 @@
 
                 for (let i = 0; i < itemsList.length; i++) {
                     let item = itemsList[i];
-
-                    // ZABEZPIECZENIE: Typ 9 = Mikstury/Runy | Typ 10 = Klejnoty/Kamienie
-                    if (item.type === 9 || item.type === 10) {
-                        continue;
-                    }
+                    
+                    if (item.type === 9 || item.type === 10) continue; 
 
                     let shouldSell = false;
                     if (config.sellNormal && !item.isUnique) shouldSell = true;
@@ -535,10 +560,10 @@
                     if (shouldSell) {
                         let rarityName = item.isUnique ? "Unikatowy" : "Zwykły";
                         updateGuiAction("Sprzedaję " + rarityName + " przedmiot u Handlarza (+ " + item.sellValue + " złota)");
-
+                        
                         const xmlSell = '<methodCall><methodName>SellItem</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><int>' + item.id + '</int></value></param><param><value><int>1</int></value></param><param><value><int>' + item.type + '</int></value></param></params></methodCall>';
                         await fetchXmlData(config.url, xmlSell);
-                        await sleep(1.0);
+                        await sleep(1.0); 
                     }
                 }
 
@@ -548,34 +573,47 @@
         }
 
         async function processMap(config) {
-            if (!config.doMap) return false;
-
+            if (!config.doMap) return { actionTaken: false, isCleared: true, waitTime: 0 };
+            
             try {
+                const xmlMapDetails = '<methodCall><methodName>GetMapDetails</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
+                const mapDetailsXML = await fetchXmlData(config.url, xmlMapDetails);
+                const mapDetailsDoc = new DOMParser().parseFromString(mapDetailsXML, "text/xml");
+                
+                const currentActivityNode = Array.from(mapDetailsDoc.getElementsByTagName('name')).find(n => n.textContent === 'current_activity');
+                if (currentActivityNode && currentActivityNode.parentNode) {
+                    const structNode = currentActivityNode.parentNode.getElementsByTagName('struct')[0];
+                    if (structNode) {
+                        let status = findValueByName(structNode, 'status');
+                        let timeRemain = parseInt(findValueByName(structNode, 'time_remain'));
+                        
+                        if (status === 'running' && !isNaN(timeRemain) && timeRemain > 0) {
+                            return { actionTaken: false, isCleared: false, waitTime: timeRemain };
+                        }
+                    }
+                }
+
                 const xmlGetLib = '<methodCall><methodName>GetLiberationDetails</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
                 const libDataXML = await fetchXmlData(config.url, xmlGetLib);
+                const libDoc = new DOMParser().parseFromString(libDataXML, "text/xml");
 
                 const xmlGetCave = '<methodCall><methodName>GetCaveDetails</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
                 const caveDataXML = await fetchXmlData(config.url, xmlGetCave);
+                const caveDoc = new DOMParser().parseFromString(caveDataXML, "text/xml");
 
-                if (libDataXML.indexOf('<name>current_activity</name>') !== -1 || caveDataXML.indexOf('<name>current_activity</name>') !== -1) {
-                    return true;
-                }
-
-                currentResources = await getCurrentResources(config);
+                let currentResources = await getCurrentResources(config);
                 let validTargets = [];
 
                 if (config.doCave) {
-                    const caveDoc = new DOMParser().parseFromString(caveDataXML, "text/xml");
                     const illusionBsCost = parseInt(findValueByName(caveDoc, "bloodstone_cost"));
                     const currentCaveCost = isNaN(illusionBsCost) ? 0 : illusionBsCost;
-
+                    
                     if (currentCaveCost === 0 || (config.useBloodstonesMap && currentResources.bloodstones > config.minBloodstonesToSpend)) {
                         validTargets.push({isCave: true});
                     }
                 }
 
                 if (config.allowedMapLocs.length > 0) {
-                    const libDoc = new DOMParser().parseFromString(libDataXML, "text/xml");
                     const currentEnergy = parseInt(findValueByName(libDoc, "energy")) || 0;
 
                     let territories = {};
@@ -599,8 +637,7 @@
                             let id = parseInt(idText);
                             if (!isNaN(id) && idText !== null) {
                                 let status = parseInt(findValueByName(structs[i], "status"));
-                                let protection = parseInt(findValueByName(structs[i], "protection")) || 0;
-                                territories[id] = { status: status, protection: protection };
+                                territories[id] = { status: status };
                             }
                         }
                     }
@@ -639,65 +676,60 @@
                         let loc = config.allowedMapLocs[i];
                         let terrId = Math.floor(loc / 3);
                         let terr = territories[terrId];
-
-                        let isTerritoryActive = false;
-                        if (terr) {
-                            if (terr.status === 1) isTerritoryActive = true;
-                            if (terr.status === 0 && terr.protection <= currentServerTime) isTerritoryActive = true;
-                        }
-
-                        if (isTerritoryActive) {
+                        
+                        if (terr && terr.status === 1) {
                             if (aliveMonsters[loc] === true) {
                                 if (currentEnergy > 0 || (config.useBloodstonesMap && currentResources.bloodstones > config.minBloodstonesToSpend)) {
-                                    validTargets.push({location: loc, isCave: false, energy: currentEnergy});
+                                    validTargets.push({location: loc, isCave: false});
                                 }
                             }
                         }
                     }
                 }
 
-                if (validTargets.length === 0) return false;
+                if (validTargets.length === 0) {
+                    return { actionTaken: false, isCleared: true, waitTime: 0 }; 
+                }
 
-                let target = validTargets[0];
+                let target = validTargets[0]; 
 
                 if (target.isCave) {
                     updateGuiAction("Rozpoczynam wyprawę w Jaskini Iluzji!");
                     const xmlStartCave = '<methodCall><methodName>StartIllusionCave</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
                     await fetchXmlData(config.url, xmlStartCave);
                 } else {
-                    if (target.energy <= 0) {
-                        updateGuiAction("Kupuję walkę na mapie (Punkt " + target.location + ") za Karneol!");
-                    } else {
-                        updateGuiAction("Atakuję Punkt " + target.location + " na Mapie!");
-                    }
+                    updateGuiAction("Atakuję Punkt " + target.location + " na Mapie!");
                     const xmlStartMapFight = '<methodCall><methodName>StartLiberation</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><int>' + target.location + '</int></value></param></params></methodCall>';
                     await fetchXmlData(config.url, xmlStartMapFight);
                 }
-
-                await sleep(1.5);
-                return true;
+                
+                return { actionTaken: true, isCleared: false, waitTime: 0 }; 
 
             } catch (error) {
                 console.error("Błąd Mapy:", error);
-                return false;
+                return { actionTaken: false, isCleared: true, waitTime: 0 }; 
             }
         }
 
         async function processAdventure(config) {
-            updateGuiAction("Szukam najlepszej przygody...");
             const xmlGetAdventures = '<methodCall><methodName>GetAdventures</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
             const xmldata = await fetchXmlData(config.url, xmlGetAdventures);
             const xmlDoc = new DOMParser().parseFromString(xmldata, "text/xml");
+            
+            // BEZPIECZEŃSTWO: Czasami przygoda trwa w tle i nie lapie jej activeTask, wyciagamy to stąd!
+            const runningTime = parseInt(findValueByName(xmlDoc, 'running_adventure_time_remain'));
+            if (!isNaN(runningTime) && runningTime > 0) {
+                return { startedNow: true, hasRemainingAdventures: false, hasAnotherTaskRunning: true };
+            }
 
             const adventuresMadeToday = parseInt(findValueByName(xmlDoc, 'adventures_made_today'));
-
-            // Zabezpieczenie przed błędem struktury
+            
             if (isNaN(adventuresMadeToday)) {
-                return { startedNow: false, hasRemainingAdventures: false };
+                return { startedNow: false, hasRemainingAdventures: false, hasAnotherTaskRunning: true };
             }
 
             const freeAdventuresPerDay = parseInt(findValueByName(xmlDoc, 'free_adventures_per_day')) || 0;
-
+            
             let data = {
                 adventures: Array.from(xmlDoc.querySelectorAll('array > data > value > struct')).map(function(adv) {
                     return {
@@ -709,18 +741,17 @@
                     };
                 }),
                 hasRemainingAdventures: adventuresMadeToday < freeAdventuresPerDay,
+                hasAnotherTaskRunning: false,
                 startedNow: false
             };
 
             if (!data.hasRemainingAdventures) {
-                if (!config.useBloodstones) return data;
-                let res = await getCurrentResources(config);
-                if (res.bloodstones <= config.minBloodstonesToSpend) return data;
+                return data; 
             }
 
             const maxDifficulty = difficultyMap[config.difficulty];
             const filteredAdventures = data.adventures.filter(function(a) { return a.difficulty <= maxDifficulty; });
-
+            
             if (filteredAdventures.length === 0) return data;
 
             const bestAdventure = filteredAdventures.reduce(function(max, current) {
@@ -734,33 +765,36 @@
             updateGuiAction("Wysyłam na przygodę...");
             const xmlStartAdventure = '<methodCall><methodName>StartAdventure</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><int>' + bestAdventure.id + '</int></value></param></params></methodCall>';
             await fetchXmlData(config.url, xmlStartAdventure);
-            await sleep(1); // Sekunda oddechu dla serwera
-
+            await sleep(1); 
+            
             data.startedNow = true;
             return data;
         }
 
         async function runBotLoop() {
             updateGuiAction("Cykl rozpoczęty. Skanuję status...");
+            let adventureCooldown = 0; 
+
             try {
                 while (isBotRunning) {
                     let config = getConfig();
 
-                    // 1. GŁÓWNE ZABEZPIECZENIE (Weryfikacja czy postać pracuje lub wykonuje przygodę)
                     let activeTask = await getActiveTask(config);
                     if (activeTask) {
                         let waitTime = activeTask.time + 2;
                         const endTime = Date.now() + (waitTime * 1000);
                         let statusName = (activeTask.type === 'work') ? "PRACA" : "ZADANIE";
-
+                        
                         updateGuiAction("Aktywne zadanie: " + statusName + ". Oczekuję...");
-
+                        adventureCooldown = 0; 
+                        
                         while (Date.now() < endTime && isBotRunning) {
                             let tr = Math.ceil((endTime - Date.now()) / 1000);
-
-                            // Mapę bijemy w tle TYLKO podczas przygód, nigdy podczas Pracy!
+                            
+                            // Mapę zlecamy w tle TYLKO podczas przygody
                             if (activeTask.type !== 'work') {
                                 if (tr % 45 === 0 && config.doMap) {
+                                    // Puszcza mapę w eter, nie przerywając odliczania przygody!
                                     await processMap(config);
                                 }
                             }
@@ -770,8 +804,7 @@
                             }
                             await sleep(1);
                         }
-
-                        // Po zakonczeniu odświeżenie danych
+                        
                         if (isBotRunning) {
                             if (activeTask.type !== 'work') {
                                 updateGuiAction("Odbieram nagrodę za przygodę...");
@@ -783,76 +816,101 @@
                                 await fetchXmlData(config.url, xmlMiniUpdate);
                             }
                         }
-                        continue; // Wraca na sam początek pętli
+                        continue; 
                     }
 
-                    // 2. Moduł Czyszczenia Plecaka
                     await processInventory(config);
                     if (!isBotRunning) break;
 
-                    // 3. Skanowanie Mapy
                     document.getElementById('botStatus').innerText = "SKANOWANIE MAPY";
-                    let mapHadTargets = await processMap(config);
+                    let mapResult = await processMap(config);
                     if (!isBotRunning) break;
 
-                    // 4. Inwestowanie Złota
+                    // Zamiast czekać na Mape TUTAJ, idziemy robic przygody! (Chyba, ze nie ma juz przygód)
+                    if (mapResult.actionTaken) {
+                        await sleep(1.0); 
+                    }
+                    
                     await processCircle(config);
                     if (!isBotRunning) break;
 
                     if (config.spendGoldOn === 'attributes') await processAttributes();
                     if (!isBotRunning) break;
+                    
+                    let adventureData = { startedNow: false, hasAnotherTaskRunning: false, hasRemainingAdventures: false, skipped: true };
+                    
+                    let currentResources = await getCurrentResources(config);
+                    let canUseStones = (config.useBloodstones && currentResources.bloodstones > config.minBloodstonesToSpend);
 
-                    // 5. Szukanie Przygody
-                    document.getElementById('botStatus').innerText = "SZUKANIE PRZYGODY";
-                    const adventureData = await processAdventure(config);
-                    if (!isBotRunning) break;
+                    if (Date.now() >= adventureCooldown || canUseStones) {
+                        document.getElementById('botStatus').innerText = "SZUKANIE PRZYGODY";
+                        adventureData = await processAdventure(config);
+                        adventureData.skipped = false;
 
+                        if (!adventureData.hasAnotherTaskRunning && !adventureData.hasRemainingAdventures && !canUseStones) {
+                            adventureCooldown = Date.now() + (5 * 60 * 1000); 
+                            updateGuiAction("Wstrzymuję pytania o Przygody (Brak darmowych, bez Karneoli).");
+                        }
+                    }
+                    
                     if (adventureData.startedNow) {
-                         continue; // Jeśli wysłano na przygodę, loop zresetuje się i wyłapie to w pkt. 1
+                         continue; 
                     }
 
-                    // 6. Obsługa braku przygód
-                    if (!adventureData.hasRemainingAdventures) {
-                        config = getConfig();
-                        let currentResources = await getCurrentResources(config);
-
-                        if (config.useBloodstones && (currentResources.bloodstones > config.minBloodstonesToSpend)) {
+                    // TUTA JESTEŚMY TYLKO, GDY NIE MA PRZYGÓD
+                    if (!adventureData.hasRemainingAdventures || adventureData.skipped) {
+                        
+                        if (canUseStones) {
                              updateGuiAction("Pula przygód pusta, ponawiam (Karneol)!");
                              await sleep(2);
                         } else {
-
-                            // Zanim pójdziemy spać/do pracy, upewnijmy się, że na mapie nic nie zostało do ubicia
-                            let isMapBusyOrFull = false;
-                            if (config.doMap && (config.allowedMapLocs.length > 0 || config.doCave)) {
-                                isMapBusyOrFull = await processMap(config);
-                                if (isMapBusyOrFull) {
-                                    continue; // Znaleziono cel i zaatakowano. Reset pętli, aby ubić go do końca.
+                            
+                            // Skoro NIE robimy przygody, i mapa fizycznie trwa, TO czekamy na mape!
+                            if (!mapResult.isCleared && mapResult.waitTime > 0) {
+                                let waitTime = mapResult.waitTime + 2; 
+                                updateGuiAction("Trwa walka na mapie. Czekam " + waitTime + "s...");
+                                
+                                let endTime = Date.now() + (waitTime * 1000);
+                                while(Date.now() < endTime && isBotRunning) {
+                                    let tr = Math.ceil((endTime - Date.now()) / 1000);
+                                    if (tr % 10 === 0 || tr < 5) {
+                                        document.getElementById('botStatus').innerText = "WALKA NA MAPIE (" + tr + "s)";
+                                    }
+                                    await sleep(1);
                                 }
+                                continue; 
                             }
 
-                            // Moduł Pracy
-                            if (config.doWork && !isMapBusyOrFull) {
+                            // Jeśli przed chwilą bot uderzył, reset by ponowić atak
+                            if (mapResult.actionTaken) {
+                                continue;
+                            }
+
+                            if (config.doWork && mapResult.isCleared) {
                                 updateGuiAction("Mapa wyczyszczona. Rozpoczynam Pracę (" + config.workHours + " godz)!");
                                 const xmlStartWork = '<methodCall><methodName>StartWork</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><int>' + config.workHours + '</int></value></param></params></methodCall>';
                                 await fetchXmlData(config.url, xmlStartWork);
                                 await sleep(2);
-                                continue; // Reset pętli -> złapie 8 godzin w getActiveTask
+                                adventureCooldown = 0; 
+                                continue; 
                             }
 
-                            // Moduł Bezczynności (Idle)
-                            let waitTime = 60 * 5;
+                            let waitTime = 60 * 5; 
                             const endTime = Date.now() + (waitTime * 1000);
                             updateGuiAction("Tryb spoczynku (5 min). Czekam na resety.");
-
+                            
                             while(Date.now() < endTime && isBotRunning) {
                                 let tr = Math.ceil((endTime - Date.now()) / 1000);
-
+                                
                                 if (tr % 60 === 0 && config.doMap) {
-                                    await processMap(config);
+                                    let bgMapResult = await processMap(config);
+                                    if (bgMapResult.actionTaken || (!bgMapResult.isCleared && bgMapResult.waitTime > 0)) {
+                                        break; 
+                                    }
                                 }
-
+                                
                                 if (tr % 10 === 0 || tr < 5) {
-                                    document.getElementById('botStatus').innerText = "BRAK PRZYGÓD (" + tr + "s)";
+                                    document.getElementById('botStatus').innerText = "BRAK ZADAŃ (" + tr + "s)";
                                 }
                                 await sleep(1);
                             }
@@ -864,10 +922,10 @@
                 let waitTime = 10;
                 const endTime = Date.now() + (waitTime * 1000);
                 updateGuiAction("Błąd gry. Próba wznowienia...");
-                while(Date.now() < endTime && isBotRunning) {
-                    await sleep(1);
+                while(Date.now() < endTime && isBotRunning) { 
+                    await sleep(1); 
                 }
-                if(isBotRunning) runBotLoop();
+                if(isBotRunning) runBotLoop(); 
             }
 
             mainBotLoopActive = false;
