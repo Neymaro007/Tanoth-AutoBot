@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/Version-8.2-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/Platform-Tampermonkey-green.svg" alt="Tampermonkey">
   <img src="https://img.shields.io/badge/Language-JavaScript-yellow.svg" alt="JavaScript">
-  <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg" alt="License">
+  ![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)
 </p>
 
 > Kompleksowe, asynchroniczne narzędzie (Userscript) automatyzujące rozgrywkę w przeglądarkowej grze RPG **Tanoth**. Skrypt został zaprojektowany z myślą o maksymalnej optymalizacji czasu i zasobów, działając w tle poprzez bezpośrednią komunikację z serwerem gry za pomocą zapytań XML-RPC.
