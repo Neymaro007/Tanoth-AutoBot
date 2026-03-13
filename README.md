@@ -26,7 +26,9 @@
 
 ---
 
-## 🚀 Kluczowe funkcjonalności
+<br>
+<h2 align="center">🚀 <b>KLUCZOWE FUNKCJONALNOŚCI</b> 🚀</h2>
+<br>
 
 ### 🗡️ Inteligentny Silnik Walki (Przygody i Mapa)
 * **Zarządzanie przygodami:** Automatyczny dobór optymalnych misji na podstawie priorytetu (Złoto / Doświadczenie) oraz maksymalnego poziomu trudności.
