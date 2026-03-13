@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Tanoth Bot Osobisty (Wersja 8.2 - Bezpieczny Plecak)
+// @name         Tanoth Bot Osobisty (Wersja 8.3 - Synchronizacja Pracy)
 // @namespace    http://tampermonkey.net/
-// @version      8.2
+// @version      8.3
 // @description  Automatyczny bot: Atrybuty, Przygody, Krąg, Mapa, Lochy, Praca i Handel!
 // @author       ANONYMOUS
 // @match        https://*.tanoth.gameforge.com/main/client*
@@ -45,15 +45,13 @@
 
         let html = '';
 
-        // Pasek Tytułowy (Draggable)
         html += '<div id="tb-header" style="cursor: move; background: linear-gradient(to bottom, #3a2a18, #1a120a); border-bottom: 1px solid #8b6508; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 3px 3px 0 0;">';
-        html += '<span style="font-weight: bold; color: #e6c875; font-size: 13px;">🐉 Tanoth Bot v8.2</span>';
+        html += '<span style="font-weight: bold; color: #e6c875; font-size: 13px;">🐉 Tanoth Bot v8.3</span>';
         html += '<span id="tb-min-btn" style="cursor: pointer; color: #ffaa00; font-weight: bold; font-size: 14px;" title="Minimalizuj">_</span>';
         html += '</div>';
 
         html += '<div id="tb-body">';
 
-        // Zakładki (Tabs)
         html += '<div style="display: flex; background: #1a120a; border-bottom: 1px solid #5a4010; font-size: 10px;">';
         html += '<div class="tb-tab" data-target="tb-walka" style="flex: 1; text-align: center; padding: 6px; cursor: pointer; background: #3a2a18; color: #e6c875; font-weight: bold; border-right: 1px solid #5a4010;">🗡️ Walka</div>';
         html += '<div class="tb-tab" data-target="tb-bohater" style="flex: 1; text-align: center; padding: 6px; cursor: pointer; color: #8a7a5c; border-right: 1px solid #5a4010;">🧙 Bohater</div>';
@@ -61,7 +59,6 @@
         html += '<div class="tb-tab" data-target="tb-opcje" style="flex: 1; text-align: center; padding: 6px; cursor: pointer; color: #8a7a5c;">⚙️ Opcje</div>';
         html += '</div>';
 
-        // Zawartość - WALKA
         html += '<div id="tb-walka" class="tb-content" style="padding: 10px; display: block;">';
         html += '<div style="margin-bottom: 8px; border-bottom: 1px dotted #5a4010; padding-bottom: 4px;"><b style="color:#e6c875;">PRZYGODY</b></div>';
         html += '<div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><label>Priorytet:</label><select id="cfg_priority" style="background:#2a1e12; color:#e6c875; border:1px solid #8b6508;"><option value="experience">Doświadczenie</option><option value="gold">Złoto</option></select></div>';
@@ -79,7 +76,6 @@
         html += '<div style="margin-top:5px; padding-top:5px; border-top: 1px dotted #5a4010;"><label><input type="checkbox" id="cfg_map_cave" checked> <b style="color:#b5a0f5;">Jaskinia Iluzji (Loch)</b></label></div>';
         html += '</div>';
 
-        // Zawartość - BOHATER
         html += '<div id="tb-bohater" class="tb-content" style="padding: 10px; display: none;">';
         html += '<div style="margin-bottom: 8px; border-bottom: 1px dotted #5a4010; padding-bottom: 4px;"><b style="color:#e6c875;">ZŁOTO</b></div>';
         html += '<div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><label>Wydawaj na:</label><select id="cfg_spendOn" style="background:#2a1e12; color:#e6c875; border:1px solid #8b6508;"><option value="attributes">Atrybuty</option><option value="circle">Krąg (+Atr)</option></select></div>';
@@ -94,9 +90,7 @@
         html += '</div>';
         html += '</div>';
 
-        // Zawartość - INNE (PRACA / SPRZEDAŻ)
         html += '<div id="tb-inne" class="tb-content" style="padding: 10px; display: none;">';
-
         html += '<div style="margin-bottom: 8px; border-bottom: 1px dotted #5a4010; padding-bottom: 4px;"><b style="color:#e6c875;">MODUŁ PRACY</b></div>';
         html += '<div style="display: flex; flex-direction:column; gap: 6px; margin-bottom:10px;">';
         html += '<label title="Pracuje gdy braknie przygód i pustej mapie"><input type="checkbox" id="cfg_doWork" checked> Pracuj po wyczyszczeniu zazn. mapy</label>';
@@ -105,14 +99,13 @@
         html += '</select></div>';
         html += '</div>';
 
-        html += '<div style="margin-bottom: 8px; border-bottom: 1px dotted #5a4010; padding-bottom: 4px;"><b style="color:#e6c875;">AUTO SPRZEDAŻ (Zostawia Mikstury i Runy)</b></div>';
+        html += '<div style="margin-bottom: 8px; border-bottom: 1px dotted #5a4010; padding-bottom: 4px;"><b style="color:#e6c875;">AUTO SPRZEDAŻ (Ignoruje mikstury/runy/klejnoty)</b></div>';
         html += '<div style="display: flex; flex-direction:column; gap: 4px;">';
         html += '<label><input type="checkbox" id="cfg_sellNormal" checked> Sprzedawaj Zwykłe Przedmioty</label>';
         html += '<label><input type="checkbox" id="cfg_sellEpic"> Sprzedawaj Unikaty/Epickie</label>';
         html += '</div>';
         html += '</div>';
 
-        // Zawartość - OPCJE
         html += '<div id="tb-opcje" class="tb-content" style="padding: 10px; display: none;">';
         html += '<div style="margin-bottom: 8px; border-bottom: 1px dotted #5a4010; padding-bottom: 4px;"><b style="color:#e6c875;">UŻYCIE KARNEOLI</b></div>';
         html += '<div style="display: flex; flex-direction:column; gap: 6px; margin-bottom:10px;">';
@@ -122,7 +115,6 @@
         html += '</div>';
         html += '</div>';
 
-        // Konsola Logów
         html += '<div style="background: #0a0805; padding: 5px; border-top: 1px solid #5a4010; border-bottom: 1px solid #5a4010;">';
         html += '<div style="color:#8a7a5c; font-size:9px; margin-bottom:2px;">LOGI OPERACYJNE:</div>';
         html += '<div id="tb-console" style="height: 55px; overflow-y: auto; font-family: monospace; font-size: 10px; color: #a99d85; display:flex; flex-direction:column; gap:2px;">';
@@ -130,7 +122,6 @@
         html += '</div>';
         html += '</div>';
 
-        // Stopka z przyciskiem start
         html += '<div style="padding: 10px; display: flex; justify-content: space-between; align-items: center; background: #1a120a; border-radius: 0 0 3px 3px;">';
         html += '<div style="font-size:12px;">Status: <b id="botStatus" style="color: #ff4444;">ZATRZYMANY</b></div>';
         html += '<button id="toggleBotBtn" style="background: #3a2a18; border: 1px solid #e6c875; color: #e6c875; padding: 6px 15px; cursor: pointer; border-radius: 4px; font-weight: bold; transition: 0.2s;">▶ URUCHOM</button>';
@@ -140,7 +131,7 @@
         gui.innerHTML = html;
         document.body.appendChild(gui);
 
-        // Obsługa Zakładek
+        // Zakładki
         const tabs = document.querySelectorAll('.tb-tab');
         const contents = document.querySelectorAll('.tb-content');
         tabs.forEach(function(tab) {
@@ -151,7 +142,6 @@
                     t.style.fontWeight = 'normal';
                 });
                 contents.forEach(function(c) { c.style.display = 'none'; });
-
                 this.style.background = '#3a2a18';
                 this.style.color = '#e6c875';
                 this.style.fontWeight = 'bold';
@@ -206,7 +196,7 @@
             isDragging = false;
         });
 
-        // Obsługa Start
+        // Start
         const btn = document.getElementById('toggleBotBtn');
         btn.onmouseover = function() { this.style.background = '#503a21'; };
         btn.onmouseout = function() { this.style.background = '#3a2a18'; };
@@ -281,6 +271,8 @@
                 logLine.style.color = "#ffaa00";
             } else if (text.indexOf("Brak") !== -1 || text.indexOf("Oczekuję") !== -1 || text.indexOf("Czekam") !== -1 || text.indexOf("Tryb") !== -1) {
                 logLine.style.color = "#8a7a5c";
+            } else if (text.indexOf("Aktywne zadanie") !== -1) {
+                logLine.style.color = "#b5a0f5";
             }
 
             logLine.innerText = "[" + time + "] " + text;
@@ -308,8 +300,8 @@
             return initialServerTime + timeElapsedSeconds;
         }
 
-        function findValueByName(xmlDoc, name) {
-            const nameNodes = xmlDoc.getElementsByTagName('name');
+        function findValueByName(xmlNode, name) {
+            const nameNodes = xmlNode.getElementsByTagName('name');
             for (let i = 0; i < nameNodes.length; i++) {
                 if (nameNodes[i].textContent === name) {
                     const memberNode = nameNodes[i].parentNode;
@@ -346,6 +338,28 @@
             const xmlGetResources = '<methodCall><methodName>MiniUpdate</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
             const xmlResourcesData = await fetchXmlData(config.url, xmlGetResources);
             return parseResourcesXMLResponse(xmlResourcesData);
+        }
+
+        // Centralny punkt wykrywania trwających zadań (Praca / Przygoda) - Niezawodne!
+        async function getActiveTask(config) {
+            const xmlReq = '<methodCall><methodName>MiniUpdate</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
+            const xmlData = await fetchXmlData(config.url, xmlReq);
+            const xmlDoc = new DOMParser().parseFromString(xmlData, "text/xml");
+
+            let activeModule = null;
+            const activeModuleNode = Array.from(xmlDoc.getElementsByTagName('name')).find(n => n.textContent === 'active_module');
+
+            if (activeModuleNode && activeModuleNode.parentNode) {
+                const structNode = activeModuleNode.parentNode.getElementsByTagName('struct')[0];
+                if (structNode && structNode.getElementsByTagName('member').length > 0) {
+                    let time = parseInt(findValueByName(structNode, 'time')) || 0;
+                    let type = findValueByName(structNode, 'type') || '';
+                    if (time > 0 && type !== '') {
+                        activeModule = { time: time, type: type };
+                    }
+                }
+            }
+            return activeModule;
         }
 
         async function processCircle(config) {
@@ -670,11 +684,18 @@
         }
 
         async function processAdventure(config) {
+            updateGuiAction("Szukam najlepszej przygody...");
             const xmlGetAdventures = '<methodCall><methodName>GetAdventures</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
             const xmldata = await fetchXmlData(config.url, xmlGetAdventures);
             const xmlDoc = new DOMParser().parseFromString(xmldata, "text/xml");
 
-            const adventuresMadeToday = parseInt(findValueByName(xmlDoc, 'adventures_made_today')) || 0;
+            const adventuresMadeToday = parseInt(findValueByName(xmlDoc, 'adventures_made_today'));
+
+            // Zabezpieczenie przed błędem struktury
+            if (isNaN(adventuresMadeToday)) {
+                return { startedNow: false, hasRemainingAdventures: false };
+            }
+
             const freeAdventuresPerDay = parseInt(findValueByName(xmlDoc, 'free_adventures_per_day')) || 0;
 
             let data = {
@@ -687,88 +708,58 @@
                         id: parseInt(findValueByName(adv, 'quest_id'))
                     };
                 }),
-                hasAnotherTaskRunning: isNaN(parseInt(findValueByName(xmlDoc, 'adventures_made_today'))),
                 hasRemainingAdventures: adventuresMadeToday < freeAdventuresPerDay,
-                taskRunning: null
+                startedNow: false
             };
 
-            if (data.hasAnotherTaskRunning) {
-                const xmlTaskDataReq = '<methodCall><methodName>MiniUpdate</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
-                const xmlTaskData = await fetchXmlData(config.url, xmlTaskDataReq);
-                const taskDoc = new DOMParser().parseFromString(xmlTaskData, "text/xml");
-                data.taskRunning = {
-                    timeTask: parseInt(findValueByName(taskDoc, 'time')) || 10,
-                    typeTask: findValueByName(taskDoc, 'type') || 'nieznane'
-                };
-            } else {
-
-                if (!data.hasRemainingAdventures) {
-                    if (!config.useBloodstones) return data;
-
-                    let res = await getCurrentResources(config);
-                    if (res.bloodstones <= config.minBloodstonesToSpend) return data;
-                }
-
-                const maxDifficulty = difficultyMap[config.difficulty];
-                const filteredAdventures = data.adventures.filter(function(a) { return a.difficulty <= maxDifficulty; });
-
-                if (filteredAdventures.length === 0) return data;
-
-                const bestAdventure = filteredAdventures.reduce(function(max, current) {
-                    if (config.priorityAdventure === 'gold') {
-                        return (current.gold > max.gold) ? current : max;
-                    } else {
-                        return (current.experience > max.experience) ? current : max;
-                    }
-                }, filteredAdventures[0]);
-
-                updateGuiAction("Wysyłam na przygodę...");
-                const xmlStartAdventure = '<methodCall><methodName>StartAdventure</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><int>' + bestAdventure.id + '</int></value></param></params></methodCall>';
-                await fetchXmlData(config.url, xmlStartAdventure);
-
-                data.startedNow = true;
+            if (!data.hasRemainingAdventures) {
+                if (!config.useBloodstones) return data;
+                let res = await getCurrentResources(config);
+                if (res.bloodstones <= config.minBloodstonesToSpend) return data;
             }
+
+            const maxDifficulty = difficultyMap[config.difficulty];
+            const filteredAdventures = data.adventures.filter(function(a) { return a.difficulty <= maxDifficulty; });
+
+            if (filteredAdventures.length === 0) return data;
+
+            const bestAdventure = filteredAdventures.reduce(function(max, current) {
+                if (config.priorityAdventure === 'gold') {
+                    return (current.gold > max.gold) ? current : max;
+                } else {
+                    return (current.experience > max.experience) ? current : max;
+                }
+            }, filteredAdventures[0]);
+
+            updateGuiAction("Wysyłam na przygodę...");
+            const xmlStartAdventure = '<methodCall><methodName>StartAdventure</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><int>' + bestAdventure.id + '</int></value></param></params></methodCall>';
+            await fetchXmlData(config.url, xmlStartAdventure);
+            await sleep(1); // Sekunda oddechu dla serwera
+
+            data.startedNow = true;
             return data;
         }
 
         async function runBotLoop() {
-            updateGuiAction("Cykl rozpoczęty. Skanuję opcje...");
+            updateGuiAction("Cykl rozpoczęty. Skanuję status...");
             try {
                 while (isBotRunning) {
                     let config = getConfig();
 
-                    await processInventory(config);
-                    if (!isBotRunning) break;
-
-                    document.getElementById('botStatus').innerText = "SKANOWANIE MAPY";
-                    let mapHadTargets = await processMap(config);
-                    if (!isBotRunning) break;
-
-                    await processCircle(config);
-                    if (!isBotRunning) break;
-
-                    if (config.spendGoldOn === 'attributes') await processAttributes();
-                    if (!isBotRunning) break;
-
-                    document.getElementById('botStatus').innerText = "SZUKANIE PRZYGODY";
-                    const adventureData = await processAdventure(config);
-                    if (!isBotRunning) break;
-
-                    if (adventureData.startedNow) {
-                         continue;
-                    }
-
-                    if (adventureData.hasAnotherTaskRunning) {
-                        let taskType = adventureData.taskRunning.typeTask;
-                        let waitTime = adventureData.taskRunning.timeTask + 2;
+                    // 1. GŁÓWNE ZABEZPIECZENIE (Weryfikacja czy postać pracuje lub wykonuje przygodę)
+                    let activeTask = await getActiveTask(config);
+                    if (activeTask) {
+                        let waitTime = activeTask.time + 2;
                         const endTime = Date.now() + (waitTime * 1000);
+                        let statusName = (activeTask.type === 'work') ? "PRACA" : "ZADANIE";
 
-                        let statusName = (taskType === 'work') ? "PRACA" : "ZADANIE";
+                        updateGuiAction("Aktywne zadanie: " + statusName + ". Oczekuję...");
 
                         while (Date.now() < endTime && isBotRunning) {
                             let tr = Math.ceil((endTime - Date.now()) / 1000);
 
-                            if (taskType !== 'work') {
+                            // Mapę bijemy w tle TYLKO podczas przygód, nigdy podczas Pracy!
+                            if (activeTask.type !== 'work') {
                                 if (tr % 45 === 0 && config.doMap) {
                                     await processMap(config);
                                 }
@@ -780,40 +771,75 @@
                             await sleep(1);
                         }
 
-                        if(isBotRunning && taskType !== 'work') {
-                            const xmlGetAdvRefresh = '<methodCall><methodName>GetAdventures</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
-                            await fetchXmlData(config.url, xmlGetAdvRefresh);
-                        } else if (isBotRunning && taskType === 'work') {
-                            const xmlMiniUpdate = '<methodCall><methodName>MiniUpdate</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
-                            await fetchXmlData(config.url, xmlMiniUpdate);
+                        // Po zakonczeniu odświeżenie danych
+                        if (isBotRunning) {
+                            if (activeTask.type !== 'work') {
+                                updateGuiAction("Odbieram nagrodę za przygodę...");
+                                const xmlGetAdvRefresh = '<methodCall><methodName>GetAdventures</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
+                                await fetchXmlData(config.url, xmlGetAdvRefresh);
+                            } else {
+                                updateGuiAction("Koniec pracy. Odświeżam stan...");
+                                const xmlMiniUpdate = '<methodCall><methodName>MiniUpdate</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
+                                await fetchXmlData(config.url, xmlMiniUpdate);
+                            }
                         }
+                        continue; // Wraca na sam początek pętli
+                    }
 
-                    } else if (!adventureData.hasRemainingAdventures) {
+                    // 2. Moduł Czyszczenia Plecaka
+                    await processInventory(config);
+                    if (!isBotRunning) break;
 
+                    // 3. Skanowanie Mapy
+                    document.getElementById('botStatus').innerText = "SKANOWANIE MAPY";
+                    let mapHadTargets = await processMap(config);
+                    if (!isBotRunning) break;
+
+                    // 4. Inwestowanie Złota
+                    await processCircle(config);
+                    if (!isBotRunning) break;
+
+                    if (config.spendGoldOn === 'attributes') await processAttributes();
+                    if (!isBotRunning) break;
+
+                    // 5. Szukanie Przygody
+                    document.getElementById('botStatus').innerText = "SZUKANIE PRZYGODY";
+                    const adventureData = await processAdventure(config);
+                    if (!isBotRunning) break;
+
+                    if (adventureData.startedNow) {
+                         continue; // Jeśli wysłano na przygodę, loop zresetuje się i wyłapie to w pkt. 1
+                    }
+
+                    // 6. Obsługa braku przygód
+                    if (!adventureData.hasRemainingAdventures) {
                         config = getConfig();
-                        currentResources = await getCurrentResources(config);
+                        let currentResources = await getCurrentResources(config);
 
                         if (config.useBloodstones && (currentResources.bloodstones > config.minBloodstonesToSpend)) {
                              updateGuiAction("Pula przygód pusta, ponawiam (Karneol)!");
                              await sleep(2);
                         } else {
 
+                            // Zanim pójdziemy spać/do pracy, upewnijmy się, że na mapie nic nie zostało do ubicia
                             let isMapBusyOrFull = false;
                             if (config.doMap && (config.allowedMapLocs.length > 0 || config.doCave)) {
                                 isMapBusyOrFull = await processMap(config);
                                 if (isMapBusyOrFull) {
-                                    continue;
+                                    continue; // Znaleziono cel i zaatakowano. Reset pętli, aby ubić go do końca.
                                 }
                             }
 
+                            // Moduł Pracy
                             if (config.doWork && !isMapBusyOrFull) {
                                 updateGuiAction("Mapa wyczyszczona. Rozpoczynam Pracę (" + config.workHours + " godz)!");
                                 const xmlStartWork = '<methodCall><methodName>StartWork</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><int>' + config.workHours + '</int></value></param></params></methodCall>';
                                 await fetchXmlData(config.url, xmlStartWork);
                                 await sleep(2);
-                                continue;
+                                continue; // Reset pętli -> złapie 8 godzin w getActiveTask
                             }
 
+                            // Moduł Bezczynności (Idle)
                             let waitTime = 60 * 5;
                             const endTime = Date.now() + (waitTime * 1000);
                             updateGuiAction("Tryb spoczynku (5 min). Czekam na resety.");
