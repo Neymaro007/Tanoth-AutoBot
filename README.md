@@ -4,8 +4,8 @@
   <img src="https://img.shields.io/badge/Version-8.2-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/Platform-Tampermonkey-green.svg" alt="Tampermonkey">
   <img src="https://img.shields.io/badge/Language-JavaScript-yellow.svg" alt="JavaScript">
+  [![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC_BY--NC_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
 </p>
-[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC_BY--NC_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
 > Kompleksowe, asynchroniczne narzędzie (Userscript) automatyzujące rozgrywkę w przeglądarkowej grze RPG **Tanoth**. Skrypt został zaprojektowany z myślą o maksymalnej optymalizacji czasu i zasobów, działając w tle poprzez bezpośrednią komunikację z serwerem gry za pomocą zapytań XML-RPC.
 
 ![Interfejs Bota Tanoth](1.png)![Interfejs Bota Tanoth](2.png)![Interfejs Bota Tanoth](3.png)![Interfejs Bota Tanoth](4.png) 
