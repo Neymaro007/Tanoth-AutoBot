@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      8.3
 // @description  Automatyczny bot: Atrybuty, Przygody, Krąg, Mapa, Lochy, Praca i Handel!
-// @author       ANONYMOUS
+// @author       Neymaro007
 // @match        https://*.tanoth.gameforge.com/main/client*
 // @grant        none
 // ==/UserScript==
