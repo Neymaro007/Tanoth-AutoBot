@@ -1,7 +1,7 @@
 <h1 align="center">⚔️ Tanoth Premium Auto-Bot</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-8.3-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Version-9.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/Platform-Tampermonkey-green.svg" alt="Tampermonkey">
   <img src="https://img.shields.io/badge/Language-JavaScript-yellow.svg" alt="JavaScript">
   <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg" alt="License CC BY-NC 4.0"></a>
