@@ -14,11 +14,15 @@
 
 
 ## 📑 Spis treści
-- [Kluczowe funkcjonalności](#-kluczowe-funkcjonalności)
-- [Architektura i Bezpieczeństwo](#-architektura-i-bezpieczeństwo)
-- [Instalacja](#-instalacja)
-- [Konfiguracja (GUI)](#-konfiguracja-gui)
-- [Zastrzeżenia prawne](#-oświadczenie-disclaimer)
+<br>
+<p align="center">
+  <a href="#-kluczowe-funkcjonalności"><b>🚀 Funkcjonalności</b></a> &nbsp;•&nbsp;
+  <a href="#-architektura-i-bezpieczeństwo"><b>🛡️ Architektura</b></a> &nbsp;•&nbsp;
+  <a href="#-instalacja"><b>🛠️ Instalacja</b></a> &nbsp;•&nbsp;
+  <a href="#-konfiguracja-gui"><b>⚙️ Konfiguracja</b></a> &nbsp;•&nbsp;
+  <a href="#️-oświadczenie-disclaimer"><b>⚠️ Disclaimer</b></a>
+</p>
+<br>
 
 ---
 
