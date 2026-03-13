@@ -1,4 +1,4 @@
-<h1 align="center">Tanoth Premium Auto-Bot</h1>
+<h1 align="center">⚔️ Tanoth Premium Auto-Bot</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Version-8.3-blue.svg" alt="Version">
