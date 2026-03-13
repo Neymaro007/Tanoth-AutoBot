@@ -9,9 +9,9 @@
 
 > Kompleksowe, asynchroniczne narzędzie (Userscript) automatyzujące rozgrywkę w przeglądarkowej grze RPG **Tanoth**. Skrypt został zaprojektowany z myślą o maksymalnej optymalizacji czasu i zasobów, działając w tle poprzez bezpośrednią komunikację z serwerem gry za pomocą zapytań XML-RPC.
 
-<p align="center">
+
   ![Interfejs Bota Tanoth](t1.png)![Interfejs Bota Tanoth](t2.png)![Interfejs Bota Tanoth](t3.png)![Interfejs Bota Tanoth](t4.png)
-</p>
+
 
 ## 📑 Spis treści
 - [Kluczowe funkcjonalności](#-kluczowe-funkcjonalności)
