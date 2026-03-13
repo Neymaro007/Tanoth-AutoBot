@@ -12,8 +12,10 @@
 
 ![Interfejs Bota Tanoth](1.png)![Interfejs Bota Tanoth](2.png)![Interfejs Bota Tanoth](3.png)![Interfejs Bota Tanoth](4.png) 
 
+<br>
+<h2 align="center">📑 <b>Spis treści</b> 📑</h2>
+<br>
 
-## 📑 Spis treści
 <br>
 <p align="center">
   <a href="#-kluczowe-funkcjonalności"><b>🚀 Funkcjonalności</b></a> &nbsp;•&nbsp;
