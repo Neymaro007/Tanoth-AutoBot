@@ -6,7 +6,9 @@
   <img src="https://img.shields.io/badge/Language-JavaScript-yellow.svg" alt="JavaScript">
   <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg" alt="License CC BY-NC 4.0"></a>
 </p>
-> Kompleksowe, asynchroniczne narzędzie (Userscript) automatyzujące rozgrywkę w przeglądarkowej grze RPG **Tanoth**. Skrypt został zaprojektowany z myślą o maksymalnej optymalizacji czasu i zasobów, działając w tle poprzez bezpośrednią komunikację z serwerem gry za pomocą zapytań XML-RPC.
+<p align="center">
+  <i>Kompleksowe, asynchroniczne narzędzie (Userscript) automatyzujące rozgrywkę w przeglądarkowej grze RPG <b>Tanoth</b>.<br>Skrypt został zaprojektowany z myślą o maksymalnej optymalizacji czasu i zasobów, działając w tle poprzez bezpośrednią komunikację z serwerem gry za pomocą zapytań XML-RPC.</i>
+</p>
 
 ![Interfejs Bota Tanoth](1.png)![Interfejs Bota Tanoth](2.png)![Interfejs Bota Tanoth](3.png)![Interfejs Bota Tanoth](4.png) 
 
