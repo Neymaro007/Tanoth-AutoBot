@@ -31,7 +31,7 @@
 
 ### 2. Moduł Ekonomii i Rozwoju (Economy & Upgrades)
 * **Auto-Sprzedaż (Smart Sell):** Algorytm filtrujący zawartość ekwipunku. Skrypt identyfikuje jakość przedmiotów (Zwykłe / Unikatowe) i automatycznie spienięża niepotrzebny sprzęt u Handlarza.
-* **Rozwój Atrybutów i Kręgu:** Algorytmiczne inwestowanie nadwyżek złota w wybrane statystyki postaci oraz priorytetyzacja rozbudowy Kręgu Ewokacji.
+* **Rozwój Atrybutów i Kręgu:** Algorytmiczne inwestowanie nadwyżek złota w wybrane statystyki postaci oraz priorytetyzacja rozbudowy Kręgu.
 
 ### 3. Moduł Automatyzacji Czasu Wolnego
 * **Auto-Praca:** Bot autonomicznie weryfikuje status mapy oraz przygód. Jeśli limit darmowych akcji zostanie wyczerpany, a terytoria mapy są puste, skrypt wysyła postać do Pracy na zdefiniowany przez użytkownika czas (od 1 do 12 godzin).
