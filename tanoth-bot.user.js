@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Tanoth Bot Osobisty (Wersja 9.0 - Równoległe Zadania)
+// @name         Tanoth Bot Osobisty (Wersja 9.1 - Inteligentne Przygody)
 // @namespace    http://tampermonkey.net/
-// @version      9.0
+// @version      9.1
 // @description  Automatyczny bot: Atrybuty, Przygody, Krąg, Mapa, Lochy, Praca i Handel!
 // @author       Neymaro007
 // @match        https://*.tanoth.gameforge.com/main/client*
@@ -46,7 +46,7 @@
         let html = '';
         
         html += '<div id="tb-header" style="cursor: move; background: linear-gradient(to bottom, #3a2a18, #1a120a); border-bottom: 1px solid #8b6508; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 3px 3px 0 0;">';
-        html += '<span style="font-weight: bold; color: #e6c875; font-size: 13px;">🐉 Tanoth Bot v9.0</span>';
+        html += '<span style="font-weight: bold; color: #e6c875; font-size: 13px;">🐉 Tanoth Bot v9.1</span>';
         html += '<span id="tb-min-btn" style="cursor: pointer; color: #ffaa00; font-weight: bold; font-size: 14px;" title="Minimalizuj">_</span>';
         html += '</div>';
 
@@ -264,12 +264,14 @@
             
             if (text.indexOf("Atakuję") !== -1 || text.indexOf("Rozpoczynam wyprawę") !== -1 || text.indexOf("Wysyłam") !== -1 || text.indexOf("Rozpoczynam Pracę") !== -1) {
                 logLine.style.color = "#44ff44"; 
-            } else if (text.indexOf("Kupuję") !== -1 || text.indexOf("Wykupuję") !== -1 || text.indexOf("Sprzedaję") !== -1) {
+            } else if (text.indexOf("Kupuję") !== -1 || text.indexOf("Odnowiono") !== -1 || text.indexOf("Sprzedaję") !== -1) {
                 logLine.style.color = "#ffaa00"; 
             } else if (text.indexOf("Brak") !== -1 || text.indexOf("Oczekuję") !== -1 || text.indexOf("Czekam") !== -1 || text.indexOf("Tryb") !== -1 || text.indexOf("Wstrzymuję") !== -1) {
                 logLine.style.color = "#8a7a5c"; 
             } else if (text.indexOf("Aktywne zadanie") !== -1 || text.indexOf("Trwa walka") !== -1) {
                 logLine.style.color = "#b5a0f5"; 
+            } else if (text.indexOf("Odrzucono") !== -1 || text.indexOf("Błąd") !== -1) {
+                logLine.style.color = "#ff4444"; 
             }
 
             logLine.innerText = "[" + time + "] " + text;
@@ -357,37 +359,6 @@
                 }
             }
             return activeModule;
-        }
-
-        function parseActivityTime(xmlDoc) {
-            const nameNodes = xmlDoc.getElementsByTagName('name');
-            for (let i = 0; i < nameNodes.length; i++) {
-                if (nameNodes[i].textContent === 'current_activity') {
-                    const parent = nameNodes[i].parentNode;
-                    if (parent && parent.nodeName === 'member') {
-                        const struct = parent.getElementsByTagName('struct')[0];
-                        if (struct) {
-                            let t = parseInt(findValueByName(struct, 'time'));
-                            if (!isNaN(t) && t > 0) return t;
-                            
-                            let dur = parseInt(findValueByName(struct, 'duration'));
-                            if (!isNaN(dur) && dur > 0) return dur;
-
-                            let endtime = parseInt(findValueByName(struct, 'endtime')) || parseInt(findValueByName(struct, 'end_time'));
-                            if (!isNaN(endtime) && endtime > 10000000) {
-                                let left = endtime - getCurrentServerTime();
-                                return left > 0 ? left : 0;
-                            }
-                            
-                            let timeRemain = parseInt(findValueByName(struct, 'time_remain'));
-                            if (!isNaN(timeRemain) && timeRemain > 0) return timeRemain;
-
-                            return 10;
-                        }
-                    }
-                }
-            }
-            return 0;
         }
 
         async function processCircle(config) {
@@ -670,8 +641,6 @@
                         }
                     }
 
-                    let currentServerTime = getCurrentServerTime();
-
                     for (let i = 0; i < config.allowedMapLocs.length; i++) {
                         let loc = config.allowedMapLocs[i];
                         let terrId = Math.floor(loc / 3);
@@ -711,64 +680,57 @@
             }
         }
 
+        // Tuta kryje się cały nowy mechanizm Przygód!
         async function processAdventure(config) {
             const xmlGetAdventures = '<methodCall><methodName>GetAdventures</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
             const xmldata = await fetchXmlData(config.url, xmlGetAdventures);
             const xmlDoc = new DOMParser().parseFromString(xmldata, "text/xml");
             
-            // BEZPIECZEŃSTWO: Czasami przygoda trwa w tle i nie lapie jej activeTask, wyciagamy to stąd!
             const runningTime = parseInt(findValueByName(xmlDoc, 'running_adventure_time_remain'));
             if (!isNaN(runningTime) && runningTime > 0) {
-                return { startedNow: true, hasRemainingAdventures: false, hasAnotherTaskRunning: true };
+                return { startedNow: true, hasRemainingAdventures: true, skipped: false };
             }
 
-            const adventuresMadeToday = parseInt(findValueByName(xmlDoc, 'adventures_made_today'));
-            
-            if (isNaN(adventuresMadeToday)) {
-                return { startedNow: false, hasRemainingAdventures: false, hasAnotherTaskRunning: true };
-            }
+            let adventuresArray = Array.from(xmlDoc.querySelectorAll('array > data > value > struct')).map(function(adv) {
+                return {
+                    difficulty: parseInt(findValueByName(adv, 'difficulty')),
+                    gold: parseInt(findValueByName(adv, 'gold')),
+                    experience: parseInt(findValueByName(adv, 'exp')),
+                    id: parseInt(findValueByName(adv, 'quest_id'))
+                };
+            });
 
-            const freeAdventuresPerDay = parseInt(findValueByName(xmlDoc, 'free_adventures_per_day')) || 0;
-            
-            let data = {
-                adventures: Array.from(xmlDoc.querySelectorAll('array > data > value > struct')).map(function(adv) {
-                    return {
-                        difficulty: parseInt(findValueByName(adv, 'difficulty')),
-                        gold: parseInt(findValueByName(adv, 'gold')),
-                        experience: parseInt(findValueByName(adv, 'exp')),
-                        duration: parseInt(findValueByName(adv, 'duration')),
-                        id: parseInt(findValueByName(adv, 'quest_id'))
-                    };
-                }),
-                hasRemainingAdventures: adventuresMadeToday < freeAdventuresPerDay,
-                hasAnotherTaskRunning: false,
-                startedNow: false
-            };
-
-            if (!data.hasRemainingAdventures) {
-                return data; 
+            // Nawet gdy skończą się punkty, gra zwraca 3 przygody na ekranie. 
+            // Jeśli nie zwraca żadnej, to całkowity blok.
+            if (adventuresArray.length === 0) {
+                return { startedNow: false, hasRemainingAdventures: false, skipped: false };
             }
 
             const maxDifficulty = difficultyMap[config.difficulty];
-            const filteredAdventures = data.adventures.filter(function(a) { return a.difficulty <= maxDifficulty; });
-            
-            if (filteredAdventures.length === 0) return data;
+            const filteredAdventures = adventuresArray.filter(a => a.difficulty <= maxDifficulty);
+            if (filteredAdventures.length === 0) {
+                return { startedNow: false, hasRemainingAdventures: true, skipped: true }; 
+            }
 
-            const bestAdventure = filteredAdventures.reduce(function(max, current) {
-                if (config.priorityAdventure === 'gold') {
-                    return (current.gold > max.gold) ? current : max;
-                } else {
-                    return (current.experience > max.experience) ? current : max;
-                }
+            const bestAdventure = filteredAdventures.reduce((max, current) => {
+                if (config.priorityAdventure === 'gold') return (current.gold > max.gold) ? current : max;
+                else return (current.experience > max.experience) ? current : max;
             }, filteredAdventures[0]);
 
             updateGuiAction("Wysyłam na przygodę...");
-            const xmlStartAdventure = '<methodCall><methodName>StartAdventure</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><int>' + bestAdventure.id + '</int></value></param></params></methodCall>';
-            await fetchXmlData(config.url, xmlStartAdventure);
-            await sleep(1); 
             
-            data.startedNow = true;
-            return data;
+            // SYSTEM PRÓBY - Bot "na żywioł" sprawdza, czy ma jeszcze awanturniczość.
+            const xmlStartAdventure = '<methodCall><methodName>StartAdventure</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><int>' + bestAdventure.id + '</int></value></param></params></methodCall>';
+            const startResponse = await fetchXmlData(config.url, xmlStartAdventure);
+            
+            // Jeśli serwer gry odpowiada oburzeniem (brak energii), dowiadujemy się o tym od razu.
+            if (startResponse.includes('faultCode') || startResponse.includes('error')) {
+                updateGuiAction("Brak darmowych przygód (Pula pusta).");
+                return { startedNow: false, hasRemainingAdventures: false, skipped: false };
+            }
+            
+            await sleep(1); 
+            return { startedNow: true, hasRemainingAdventures: true, skipped: false };
         }
 
         async function runBotLoop() {
@@ -791,11 +753,12 @@
                         while (Date.now() < endTime && isBotRunning) {
                             let tr = Math.ceil((endTime - Date.now()) / 1000);
                             
-                            // Mapę zlecamy w tle TYLKO podczas przygody
                             if (activeTask.type !== 'work') {
                                 if (tr % 45 === 0 && config.doMap) {
-                                    // Puszcza mapę w eter, nie przerywając odliczania przygody!
-                                    await processMap(config);
+                                    let bgMapResult = await processMap(config);
+                                    if (bgMapResult.actionTaken || (!bgMapResult.isCleared && bgMapResult.waitTime > 0)) {
+                                        break; 
+                                    }
                                 }
                             }
 
@@ -826,7 +789,6 @@
                     let mapResult = await processMap(config);
                     if (!isBotRunning) break;
 
-                    // Zamiast czekać na Mape TUTAJ, idziemy robic przygody! (Chyba, ze nie ma juz przygód)
                     if (mapResult.actionTaken) {
                         await sleep(1.0); 
                     }
@@ -837,7 +799,7 @@
                     if (config.spendGoldOn === 'attributes') await processAttributes();
                     if (!isBotRunning) break;
                     
-                    let adventureData = { startedNow: false, hasAnotherTaskRunning: false, hasRemainingAdventures: false, skipped: true };
+                    let adventureData = { startedNow: false, hasRemainingAdventures: false, skipped: true };
                     
                     let currentResources = await getCurrentResources(config);
                     let canUseStones = (config.useBloodstones && currentResources.bloodstones > config.minBloodstonesToSpend);
@@ -845,11 +807,11 @@
                     if (Date.now() >= adventureCooldown || canUseStones) {
                         document.getElementById('botStatus').innerText = "SZUKANIE PRZYGODY";
                         adventureData = await processAdventure(config);
-                        adventureData.skipped = false;
-
-                        if (!adventureData.hasAnotherTaskRunning && !adventureData.hasRemainingAdventures && !canUseStones) {
+                        
+                        // Zabezpieczenie - jeśli nie można robić przygód i nie mamy włączonych kamieni, zapominamy o nich na 5 minut
+                        if (!adventureData.hasRemainingAdventures && !canUseStones) {
                             adventureCooldown = Date.now() + (5 * 60 * 1000); 
-                            updateGuiAction("Wstrzymuję pytania o Przygody (Brak darmowych, bez Karneoli).");
+                            updateGuiAction("Wstrzymuję pytania o Przygody na 5 min.");
                         }
                     }
                     
@@ -857,15 +819,28 @@
                          continue; 
                     }
 
-                    // TUTA JESTEŚMY TYLKO, GDY NIE MA PRZYGÓD
+                    // OBSŁUGA CAŁKOWITEGO BRAKU PRZYGÓD
                     if (!adventureData.hasRemainingAdventures || adventureData.skipped) {
                         
-                        if (canUseStones) {
-                             updateGuiAction("Pula przygód pusta, ponawiam (Karneol)!");
+                        if (canUseStones && !adventureData.skipped) {
+                             
+                             updateGuiAction("Kupuję piwo u Karczmarza (Karneol)!");
+                             const xmlBuyBeer = '<methodCall><methodName>BuyAdventures</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param></params></methodCall>';
+                             let buyResp = await fetchXmlData(config.url, xmlBuyBeer);
+                             
+                             // Sprawdza czy na pewno kupił.
+                             if (buyResp.includes('faultCode') || buyResp.includes('error')) {
+                                 updateGuiAction("Błąd systemu gry! Blokuję kupowanie Karneolami na 5 min.");
+                                 adventureCooldown = Date.now() + (5 * 60 * 1000);
+                             } else {
+                                 updateGuiAction("Odnowiono przygody pomyślnie!");
+                             }
                              await sleep(2);
+                             continue; // Loop się zeruje i natychmiast wyśle postać na nową przygodę
+                             
                         } else {
                             
-                            // Skoro NIE robimy przygody, i mapa fizycznie trwa, TO czekamy na mape!
+                            // Tutaj czekamy na odnowienie MAPY
                             if (!mapResult.isCleared && mapResult.waitTime > 0) {
                                 let waitTime = mapResult.waitTime + 2; 
                                 updateGuiAction("Trwa walka na mapie. Czekam " + waitTime + "s...");
@@ -881,11 +856,11 @@
                                 continue; 
                             }
 
-                            // Jeśli przed chwilą bot uderzył, reset by ponowić atak
                             if (mapResult.actionTaken) {
                                 continue;
                             }
 
+                            // Praca gdy nic innego nie można zrobić
                             if (config.doWork && mapResult.isCleared) {
                                 updateGuiAction("Mapa wyczyszczona. Rozpoczynam Pracę (" + config.workHours + " godz)!");
                                 const xmlStartWork = '<methodCall><methodName>StartWork</methodName><params><param><value><string>' + window.flashvars.sessionID + '</string></value></param><param><value><int>' + config.workHours + '</int></value></param></params></methodCall>';
